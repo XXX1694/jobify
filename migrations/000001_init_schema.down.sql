@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS applications;
+DROP TABLE IF EXISTS jobs;
+DROP TABLE IF EXISTS developer_profiles;
+DROP TABLE IF EXISTS users;
