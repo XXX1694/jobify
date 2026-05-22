@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/abzalserikbay/jobify/internal/domain"
-	"github.com/abzalserikbay/jobify/internal/middleware"
 	"github.com/abzalserikbay/jobify/internal/service"
 	"github.com/abzalserikbay/jobify/pkg/response"
 	"github.com/go-chi/chi/v5"
@@ -32,8 +31,8 @@ func NewSavedJobHandler(svc *service.SavedJobService) *SavedJobHandler {
 // @Failure      409 {object} response.Response
 // @Router       /saved-jobs [post]
 func (h *SavedJobHandler) Save(w http.ResponseWriter, r *http.Request) {
-	userID, ok := r.Context().Value(middleware.ContextKeyUserID).(uuid.UUID)
-	if !ok {
+	userID, err := userIDFromCtx(r)
+	if err != nil {
 		response.Error(w, http.StatusUnauthorized, "unauthorized")
 		return
 	}
@@ -66,8 +65,8 @@ func (h *SavedJobHandler) Save(w http.ResponseWriter, r *http.Request) {
 // @Failure      404 {object} response.Response
 // @Router       /saved-jobs/{job_id} [delete]
 func (h *SavedJobHandler) Unsave(w http.ResponseWriter, r *http.Request) {
-	userID, ok := r.Context().Value(middleware.ContextKeyUserID).(uuid.UUID)
-	if !ok {
+	userID, err := userIDFromCtx(r)
+	if err != nil {
 		response.Error(w, http.StatusUnauthorized, "unauthorized")
 		return
 	}
@@ -99,8 +98,8 @@ func (h *SavedJobHandler) Unsave(w http.ResponseWriter, r *http.Request) {
 // @Success      200 {object} response.Response
 // @Router       /saved-jobs [get]
 func (h *SavedJobHandler) List(w http.ResponseWriter, r *http.Request) {
-	userID, ok := r.Context().Value(middleware.ContextKeyUserID).(uuid.UUID)
-	if !ok {
+	userID, err := userIDFromCtx(r)
+	if err != nil {
 		response.Error(w, http.StatusUnauthorized, "unauthorized")
 		return
 	}
