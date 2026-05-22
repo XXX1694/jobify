@@ -95,12 +95,13 @@ func (h *UserHandler) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 		GithubURL:       req.GithubURL,
 	}
 
-	if err := h.svc.UpdateProfile(r.Context(), profile); err != nil {
+	updated, err := h.svc.UpdateProfile(r.Context(), profile)
+	if err != nil {
 		response.Error(w, http.StatusInternalServerError, "failed to update profile")
 		return
 	}
 
-	response.JSON(w, http.StatusOK, profile)
+	response.JSON(w, http.StatusOK, updated)
 }
 
 func userIDFromCtx(r *http.Request) (uuid.UUID, error) {

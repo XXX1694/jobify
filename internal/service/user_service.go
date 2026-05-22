@@ -31,6 +31,9 @@ func (s *UserService) GetProfile(ctx context.Context, userID uuid.UUID) (*domain
 	return user, profile, nil
 }
 
-func (s *UserService) UpdateProfile(ctx context.Context, profile *domain.DeveloperProfile) error {
-	return s.profileRepo.Update(ctx, profile)
+func (s *UserService) UpdateProfile(ctx context.Context, profile *domain.DeveloperProfile) (*domain.DeveloperProfile, error) {
+	if err := s.profileRepo.Update(ctx, profile); err != nil {
+		return nil, err
+	}
+	return s.profileRepo.GetByUserID(ctx, profile.UserID)
 }
