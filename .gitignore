@@ -1,2 +1,7 @@
 RECOMENDATIONS.md
 .claude
+.env
+
+# built binaries
+/api
+/seed
