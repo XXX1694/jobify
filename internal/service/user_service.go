@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/abzalserikbay/jobify/internal/domain"
 	"github.com/abzalserikbay/jobify/internal/repository"
@@ -32,7 +33,15 @@ func (s *UserService) GetProfile(ctx context.Context, userID uuid.UUID) (*domain
 }
 
 func (s *UserService) UpdateProfile(ctx context.Context, profile *domain.DeveloperProfile) (*domain.DeveloperProfile, error) {
-	if err := s.profileRepo.Update(ctx, profile); err != nil {
+	err := s.profileRepo.Update(ctx, profile)
+	if errors.Is(err, domain.ErrNotFound) {
+		profile.ID = uuid.New()
+		if err := s.profileRepo.Create(ctx, profile); err != nil {
+			return nil, err
+		}
+		return s.profileRepo.GetByUserID(ctx, profile.UserID)
+	}
+	if err != nil {
 		return nil, err
 	}
 	return s.profileRepo.GetByUserID(ctx, profile.UserID)

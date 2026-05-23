@@ -47,7 +47,11 @@ func (r *ProfileRepo) Update(ctx context.Context, p *domain.DeveloperProfile) er
 	      SET name=$1, bio=$2, skills=$3, experience_years=$4, salary_min=$5, salary_max=$6, remote_only=$7, github_url=$8, updated_at=NOW()
 	      WHERE user_id=$9
 	      RETURNING updated_at`
-	return r.db.QueryRow(ctx, q,
+	err := r.db.QueryRow(ctx, q,
 		p.Name, p.Bio, p.Skills, p.ExperienceYears, p.SalaryMin, p.SalaryMax, p.RemoteOnly, p.GithubURL, p.UserID,
 	).Scan(&p.UpdatedAt)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return domain.ErrNotFound
+	}
+	return err
 }
