@@ -26,7 +26,11 @@ func (s *JobService) Create(ctx context.Context, j *domain.Job) error {
 	j.ID = uuid.New()
 	j.Source = "manual"
 	j.IsActive = true
-	return s.jobRepo.Create(ctx, j)
+	if err := s.jobRepo.Create(ctx, j); err != nil {
+		return err
+	}
+	s.invalidateJobCache(ctx)
+	return nil
 }
 
 func (s *JobService) GetByID(ctx context.Context, id uuid.UUID, userSkills []string) (*domain.JobWithMatch, error) {
@@ -52,12 +56,19 @@ func (s *JobService) GetByID(ctx context.Context, id uuid.UUID, userSkills []str
 	}, nil
 }
 
+// cachedJobList bundles a job-list page with its board-wide total so a cache
+// hit can report the real total instead of just the current page size.
+type cachedJobList struct {
+	Jobs  []domain.Job `json:"jobs"`
+	Total int          `json:"total"`
+}
+
 func (s *JobService) List(ctx context.Context, f repository.JobFilter) ([]domain.Job, int, error) {
 	cacheKey := buildCacheKey(f)
 
-	var cached []domain.Job
+	var cached cachedJobList
 	if err := s.cache.Get(ctx, cacheKey, &cached); err == nil {
-		return cached, len(cached), nil
+		return cached.Jobs, cached.Total, nil
 	}
 
 	jobs, total, err := s.jobRepo.List(ctx, f)
@@ -65,16 +76,32 @@ func (s *JobService) List(ctx context.Context, f repository.JobFilter) ([]domain
 		return nil, 0, err
 	}
 
-	_ = s.cache.Set(ctx, cacheKey, jobs)
+	_ = s.cache.Set(ctx, cacheKey, cachedJobList{Jobs: jobs, Total: total})
 	return jobs, total, nil
 }
 
 func (s *JobService) Update(ctx context.Context, j *domain.Job) error {
-	return s.jobRepo.Update(ctx, j)
+	if err := s.jobRepo.Update(ctx, j); err != nil {
+		return err
+	}
+	s.invalidateJobCache(ctx)
+	return nil
 }
 
 func (s *JobService) Delete(ctx context.Context, id uuid.UUID) error {
-	return s.jobRepo.Delete(ctx, id)
+	if err := s.jobRepo.Delete(ctx, id); err != nil {
+		return err
+	}
+	s.invalidateJobCache(ctx)
+	return nil
+}
+
+// invalidateJobCache clears cached job-list pages after a write. A cache
+// failure must not fail the write itself, so the error is logged, not returned.
+func (s *JobService) invalidateJobCache(ctx context.Context) {
+	if err := s.cache.Invalidate(ctx); err != nil {
+		slog.Error("job cache invalidation failed", "err", err)
+	}
 }
 
 func CalculateMatch(userSkills, jobSkills []string) (percent int, matched, missing []string) {
