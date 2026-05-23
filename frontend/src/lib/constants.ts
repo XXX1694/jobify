@@ -3,6 +3,7 @@ import {
   CalendarClock,
   LayoutDashboard,
   Send,
+  ShieldCheck,
   Sparkles,
   Telescope,
   User,
@@ -50,6 +51,14 @@ export const NAV_ITEMS: NavItem[] = [
     description: 'Skills, salary and preferences',
   },
 ];
+
+/** Admin-only navigation entry — kept out of NAV_ITEMS so it never renders for developers. */
+export const ADMIN_NAV_ITEM: NavItem = {
+  path: '/admin',
+  label: 'Admin',
+  icon: ShieldCheck,
+  description: 'Manage roles on the board',
+};
 
 export interface StatusMeta {
   label: string;

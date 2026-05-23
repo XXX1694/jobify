@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { AUTH_EXPIRED_EVENT } from '@/api/client';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import { ProtectedRoute } from '@/providers/ProtectedRoute';
+import { AdminRoute } from '@/providers/AdminRoute';
 import { AppShell } from '@/components/layout/AppShell';
 import { SplashScreen } from '@/components/layout/SplashScreen';
 
@@ -16,6 +17,7 @@ const ApplicationsPage = lazy(
 );
 const SavedJobsPage = lazy(() => import('@/features/saved/SavedJobsPage'));
 const ProfilePage = lazy(() => import('@/features/profile/ProfilePage'));
+const AdminPage = lazy(() => import('@/features/admin/AdminPage'));
 const NotFoundPage = lazy(() => import('@/features/NotFoundPage'));
 
 export default function App() {
@@ -55,6 +57,9 @@ export default function App() {
             <Route path="applications" element={<ApplicationsPage />} />
             <Route path="saved" element={<SavedJobsPage />} />
             <Route path="profile" element={<ProfilePage />} />
+            <Route element={<AdminRoute />}>
+              <Route path="admin" element={<AdminPage />} />
+            </Route>
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Route>

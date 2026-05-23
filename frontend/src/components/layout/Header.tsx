@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { Menu, Search } from 'lucide-react';
-import { NAV_ITEMS, type NavItem } from '@/lib/constants';
+import { ADMIN_NAV_ITEM, NAV_ITEMS, type NavItem } from '@/lib/constants';
 import { useLayout } from '@/hooks/useLayout';
 import { useCommandPalette } from '@/hooks/useCommandPalette';
 import { Button } from '@/components/ui/Button';
@@ -15,7 +15,9 @@ function Breadcrumb() {
   const { pathname } = useLocation();
   const segments = pathname.split('/').filter(Boolean);
   const root: NavItem =
-    NAV_ITEMS.find((item) => item.path === `/${segments[0] ?? ''}`) ?? NAV_ITEMS[0]!;
+    [...NAV_ITEMS, ADMIN_NAV_ITEM].find(
+      (item) => item.path === `/${segments[0] ?? ''}`,
+    ) ?? NAV_ITEMS[0]!;
   const Icon = root.icon;
   const isDetail = segments.length > 1;
 

@@ -1,7 +1,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { NavLink } from 'react-router-dom';
 import { LogOut, X } from 'lucide-react';
-import { NAV_ITEMS } from '@/lib/constants';
+import { ADMIN_NAV_ITEM, NAV_ITEMS } from '@/lib/constants';
 import { useLayout } from '@/hooks/useLayout';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import { useSignOut } from '@/hooks/useSignOut';
@@ -18,6 +18,8 @@ export function MobileNav() {
   const signOut = useSignOut();
 
   const displayName = profile?.name?.trim() || user?.email || 'Developer';
+  const navItems =
+    user?.role === 'admin' ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS;
 
   return (
     <DialogPrimitive.Root open={open} onOpenChange={setOpen}>
@@ -36,7 +38,7 @@ export function MobileNav() {
           </div>
 
           <nav className="flex-1 space-y-1 overflow-y-auto p-3">
-            {NAV_ITEMS.map((item) => {
+            {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <NavLink

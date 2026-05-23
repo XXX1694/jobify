@@ -1,8 +1,9 @@
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import { NAV_ITEMS, type NavItem } from '@/lib/constants';
+import { ADMIN_NAV_ITEM, NAV_ITEMS, type NavItem } from '@/lib/constants';
 import { useLayout } from '@/hooks/useLayout';
+import { useAuthStore } from '@/hooks/useAuthStore';
 import { Logo, LogoMark } from '@/components/common/Logo';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { Kbd } from '@/components/ui/Kbd';
@@ -65,6 +66,7 @@ function SidebarItem({ item, collapsed }: { item: NavItem; collapsed: boolean })
 export function Sidebar() {
   const collapsed = useLayout((state) => state.sidebarCollapsed);
   const toggleSidebar = useLayout((state) => state.toggleSidebar);
+  const isAdmin = useAuthStore((state) => state.user?.role === 'admin');
 
   return (
     <motion.aside
@@ -87,6 +89,12 @@ export function Sidebar() {
         {NAV_ITEMS.map((item) => (
           <SidebarItem key={item.path} item={item} collapsed={collapsed} />
         ))}
+        {isAdmin && (
+          <div className="mt-3 space-y-1 border-t border-line/60 pt-3">
+            {!collapsed && <p className="mono-label px-3 pb-1">Admin</p>}
+            <SidebarItem item={ADMIN_NAV_ITEM} collapsed={collapsed} />
+          </div>
+        )}
       </nav>
 
       <div className="shrink-0 border-t border-line/70 p-3">
