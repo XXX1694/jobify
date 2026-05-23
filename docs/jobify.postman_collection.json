@@ -1,0 +1,637 @@
+{
+  "info": {
+    "name": "Jobify API",
+    "description": "Complete Jobify REST API collection.\n\nSetup:\n1. Run `Login – Developer` or `Login – Admin` — tokens save automatically.\n2. All protected endpoints use `{{access_token}}` from collection variables.\n3. After creating a job or application, the ID is saved automatically for subsequent requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url",        "value": "http://localhost:8080/api/v1", "type": "string" },
+    { "key": "access_token",    "value": "",                             "type": "string" },
+    { "key": "refresh_token",   "value": "",                             "type": "string" },
+    { "key": "job_id",          "value": "",                             "type": "string" },
+    { "key": "application_id",  "value": "",                             "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{access_token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/register", "host": ["{{base_url}}"], "path": ["auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"Test1234!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Register a new developer account. Returns the created user object.\n\n**Validation**\n- email must be valid\n- password >= 6 characters\n\n**409** — email already registered"
+          },
+          "response": []
+        },
+        {
+          "name": "Login – Developer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.success && json.data) {",
+                  "    pm.collectionVariables.set('access_token',  json.data.access_token);",
+                  "    pm.collectionVariables.set('refresh_token', json.data.refresh_token);",
+                  "    console.log('Tokens saved. Expires in:', json.data.expires_in + 's');",
+                  "}",
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has tokens', () => {",
+                  "    pm.expect(json.data).to.have.property('access_token');",
+                  "    pm.expect(json.data).to.have.property('refresh_token');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alex.kim@gmail.com\",\n  \"password\": \"Test1234!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Seed developer account. Tokens are **automatically saved** to `access_token` and `refresh_token` collection variables."
+          },
+          "response": []
+        },
+        {
+          "name": "Login – Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.success && json.data) {",
+                  "    pm.collectionVariables.set('access_token',  json.data.access_token);",
+                  "    pm.collectionVariables.set('refresh_token', json.data.refresh_token);",
+                  "    console.log('Admin tokens saved.');",
+                  "}",
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@jobify.dev\",\n  \"password\": \"Test1234!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Admin account (role: admin). Required for job CRUD endpoints. Tokens saved automatically."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.success && json.data) {",
+                  "    pm.collectionVariables.set('access_token',  json.data.access_token);",
+                  "    pm.collectionVariables.set('refresh_token', json.data.refresh_token);",
+                  "    console.log('Tokens refreshed.');",
+                  "}",
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/refresh", "host": ["{{base_url}}"], "path": ["auth", "refresh"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Exchange a valid refresh token for a new token pair. The old refresh token is invalidated in Redis. New tokens are saved automatically."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204', () => pm.response.to.have.status(204));",
+                  "pm.collectionVariables.set('access_token',  '');",
+                  "pm.collectionVariables.set('refresh_token', '');",
+                  "console.log('Tokens cleared.');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/logout", "host": ["{{base_url}}"], "path": ["auth", "logout"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Invalidates the refresh token in Redis. Returns **204 No Content**. Collection variables are cleared automatically."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has user and profile keys', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.data).to.have.property('user');",
+                  "    pm.expect(json.data).to.have.property('profile');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/me", "host": ["{{base_url}}"], "path": ["me"] },
+            "description": "Returns current user info and developer profile.\n\n`profile` is `null` if the user has never saved their profile.\n\nResponse shape:\n```json\n{\n  \"data\": {\n    \"user\":    { \"id\", \"email\", \"role\", \"created_at\" },\n    \"profile\": { \"id\", \"user_id\", \"name\", \"bio\", \"skills\", \"experience_years\",\n                  \"salary_min\", \"salary_max\", \"remote_only\", \"github_url\", \"updated_at\" }\n  }\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Update My Profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Skills is array', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.data.skills).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/me", "host": ["{{base_url}}"], "path": ["me"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alex Kim\",\n  \"bio\": \"Backend engineer with 4 years building distributed systems in Go and Kubernetes.\",\n  \"skills\": [\"go\", \"kubernetes\", \"postgres\", \"redis\", \"docker\"],\n  \"experience_years\": 4,\n  \"salary_min\": 5000,\n  \"salary_max\": 9000,\n  \"remote_only\": true,\n  \"github_url\": \"https://github.com/alexkim\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Upsert the current user's developer profile. Creates the profile if it does not exist yet, otherwise updates it.\n\nAll fields are optional — include only what you want to change. `skills` powers the match score on every job listing."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "List Jobs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has pagination meta', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.meta).to.have.property('total');",
+                  "    pm.expect(json.meta).to.have.property('pages');",
+                  "});",
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.length > 0) {",
+                  "    pm.collectionVariables.set('job_id', json.data[0].id);",
+                  "    console.log('job_id set to:', json.data[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/jobs?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["jobs"],
+              "query": [
+                { "key": "page",       "value": "1",    "description": "Page number (default 1)" },
+                { "key": "limit",      "value": "20",   "description": "Items per page (default 20, max 100)" },
+                { "key": "skills",     "value": "go,kubernetes", "description": "Comma-separated skill filter — matches any", "disabled": true },
+                { "key": "remote",     "value": "true", "description": "Remote jobs only (true/false)",                      "disabled": true },
+                { "key": "salary_min", "value": "3000", "description": "Minimum monthly salary (USD)",                       "disabled": true },
+                { "key": "salary_max", "value": "12000","description": "Maximum monthly salary (USD)",                       "disabled": true }
+              ]
+            },
+            "description": "Paginated job board with optional filters.\n\n| Param | Type | Description |\n|---|---|---|\n| `page` | int | Page number, default 1 |\n| `limit` | int | Page size, default 20 |\n| `skills` | string | Comma-separated, e.g. `go,redis` |\n| `remote` | bool | `true` = remote only |\n| `salary_min` | int | Min salary |\n| `salary_max` | int | Max salary |\n\nThe first job's ID is automatically saved to `{{job_id}}`."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Job by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has match score', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.data).to.have.property('match_percent');",
+                  "    pm.expect(json.data).to.have.property('matched_skills');",
+                  "    pm.expect(json.data).to.have.property('missing_skills');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/jobs/{{job_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", "{{job_id}}"]
+            },
+            "description": "Returns a single job enriched with the authenticated user's skill match:\n- `match_percent` — 0-100 integer\n- `matched_skills` — skills you have that the job wants\n- `missing_skills` — skills the job wants that you don't have\n\nAlso increments `views_count` for the job."
+          },
+          "response": []
+        },
+        {
+          "name": "[Admin] Create Job",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "if (json.success && json.data) {",
+                  "    pm.collectionVariables.set('job_id', json.data.id);",
+                  "    console.log('New job_id saved:', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/jobs", "host": ["{{base_url}}"], "path": ["jobs"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Senior Backend Engineer\",\n  \"company\": \"Acme Corp\",\n  \"description\": \"We are looking for a senior backend engineer to help scale our platform to millions of users. You will own critical infrastructure components and collaborate with a small, high-impact team.\",\n  \"skills\": [\"go\", \"postgres\", \"redis\", \"kubernetes\", \"grpc\"],\n  \"salary_min\": 6000,\n  \"salary_max\": 10000,\n  \"is_remote\": true,\n  \"location\": \"Remote\",\n  \"url\": \"https://acmecorp.io/careers/senior-backend\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "**Admin only** — run `Login – Admin` first.\n\n`title` and `company` are required. All other fields are optional.\n\nThe created job ID is automatically saved to `{{job_id}}`.\n\n**403** if authenticated as a non-admin user."
+          },
+          "response": []
+        },
+        {
+          "name": "[Admin] Update Job",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/jobs/{{job_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", "{{job_id}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Senior Backend Engineer (Updated)\",\n  \"company\": \"Acme Corp\",\n  \"description\": \"Updated description with more detail about the role and compensation.\",\n  \"skills\": [\"go\", \"postgres\", \"redis\", \"kubernetes\", \"grpc\", \"docker\"],\n  \"salary_min\": 7000,\n  \"salary_max\": 11000,\n  \"is_remote\": true,\n  \"location\": \"Remote\",\n  \"url\": \"https://acmecorp.io/careers/senior-backend-v2\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "**Admin only.** Full replacement — all fields are applied. Uses `{{job_id}}` set by List or Create."
+          },
+          "response": []
+        },
+        {
+          "name": "[Admin] Delete Job",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('job_id', '');",
+                  "console.log('job_id cleared.');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/jobs/{{job_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", "{{job_id}}"]
+            },
+            "description": "**Admin only.** Permanently deletes a job and cascades to associated applications and saved-job entries.\n\n`{{job_id}}` is cleared from collection variables after success."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Applications",
+      "item": [
+        {
+          "name": "List My Applications",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.length > 0) {",
+                  "    pm.collectionVariables.set('application_id', json.data[0].id);",
+                  "    console.log('application_id set to:', json.data[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/applications", "host": ["{{base_url}}"], "path": ["applications"] },
+            "description": "Returns all applications for the authenticated user, ordered by `applied_at` descending.\n\nFirst application ID is saved to `{{application_id}}`.\n\nPossible statuses: `saved` | `applied` | `interview` | `offer` | `rejected`"
+          },
+          "response": []
+        },
+        {
+          "name": "Apply to Job",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "if (json.success && json.data) {",
+                  "    pm.collectionVariables.set('application_id', json.data.id);",
+                  "    console.log('application_id saved:', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/applications", "host": ["{{base_url}}"], "path": ["applications"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"job_id\": \"{{job_id}}\",\n  \"note\": \"Excited about this role — distributed systems are my bread and butter.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Creates an application for a job. Initial status is `saved`.\n\n`note` is optional. `job_id` must be a valid UUID.\n\nThe created application ID is saved to `{{application_id}}`.\n\nRun **List Jobs** first to populate `{{job_id}}`."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Application Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/applications/{{application_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["applications", "{{application_id}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"applied\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Move an application through the pipeline.\n\nAllowed values:\n- `saved` — on the radar\n- `applied` — application sent\n- `interview` — in conversation\n- `offer` — offer received\n- `rejected` — closed\n\n**400** for unknown status. **403** if the application belongs to another user."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Application",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('application_id', '');",
+                  "console.log('application_id cleared.');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/applications/{{application_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["applications", "{{application_id}}"]
+            },
+            "description": "Removes an application. Owner-only — **403** if it belongs to another user.\n\n`{{application_id}}` is cleared from collection variables after success."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Saved Jobs",
+      "item": [
+        {
+          "name": "List Saved Jobs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has meta', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.meta).to.have.property('total');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/saved-jobs?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["saved-jobs"],
+              "query": [
+                { "key": "page",  "value": "1",  "description": "Page (default 1)" },
+                { "key": "limit", "value": "20", "description": "Items per page (default 20)" }
+              ]
+            },
+            "description": "Returns the authenticated user's bookmarked jobs, paginated."
+          },
+          "response": []
+        },
+        {
+          "name": "Save a Job",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/saved-jobs", "host": ["{{base_url}}"], "path": ["saved-jobs"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"job_id\": \"{{job_id}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Bookmarks a job for the current user. Returns **201** with empty body on success.\n\n**409** if already saved. Uses `{{job_id}}` — run **List Jobs** first."
+          },
+          "response": []
+        },
+        {
+          "name": "Unsave a Job",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204', () => pm.response.to.have.status(204));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/saved-jobs/{{job_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["saved-jobs", "{{job_id}}"]
+            },
+            "description": "Removes a bookmark. Returns **204 No Content**.\n\n**404** if the job was not bookmarked by this user."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status is ok', () => {",
+                  "    pm.expect(pm.response.text()).to.include('ok');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["health"]
+            },
+            "description": "Liveness probe. Returns `{\"status\":\"ok\"}`. No auth required.\n\nHit this first to verify the Go server is running on port 8080."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
