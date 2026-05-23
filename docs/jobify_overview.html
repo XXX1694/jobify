@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jobify — Project Overview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #6366f1;
+    --accent-light: #e0e7ff;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --surface: #f9fafb;
+    --code-bg: #1e1e2e;
+    --code-text: #cdd6f4;
+    --tag-bg: #ede9fe;
+    --tag-text: #5b21b6;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --orange: #ea580c;
+    --orange-bg: #fff7ed;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 48px;
+  }
+
+  /* ── Cover ── */
+  .cover {
+    text-align: center;
+    padding: 60px 0 50px;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .cover-badge {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+  .cover h1 {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  .cover h1 span { color: var(--accent); }
+  .cover p {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cover-meta {
+    margin-top: 28px;
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .cover-meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* ── Section ── */
+  .section { margin-bottom: 48px; }
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+  }
+  .section-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  h3 { font-size: 14px; font-weight: 600; margin: 18px 0 8px; color: var(--text); }
+  p  { margin-bottom: 10px; color: var(--text); }
+
+  /* ── Stack table ── */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .stack-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    background: var(--surface);
+  }
+  .stack-card-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .stack-card-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .stack-card-note {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ── Layers ── */
+  .layers { display: flex; flex-direction: column; gap: 8px; }
+  .layer {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .layer-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .layer-desc { font-size: 12.5px; color: var(--text); }
+  .layer-desc code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--accent-light);
+    color: var(--accent);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  /* ── Tables ── */
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 16px; }
+  th {
+    background: var(--surface);
+    text-align: left;
+    padding: 9px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text);
+  }
+  tr:last-child td { border-bottom: none; }
+  td code, th code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--accent-light);
+    color: var(--accent);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  /* ── Code block ── */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    line-height: 1.6;
+    padding: 16px 18px;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin-bottom: 14px;
+  }
+
+  /* ── Middleware cards ── */
+  .mw-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .mw-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    background: var(--surface);
+  }
+  .mw-card-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .mw-card-body { font-size: 12px; color: var(--text); line-height: 1.55; }
+  .mw-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+  }
+  .badge-method { background: var(--accent-light); color: var(--accent); }
+  .badge-auth   { background: var(--orange-bg);    color: var(--orange); }
+  .badge-admin  { background: var(--red-bg);        color: var(--red); }
+
+  /* ── Endpoints ── */
+  .endpoint-group { margin-bottom: 20px; }
+  .endpoint-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .endpoint {
+    display: grid;
+    grid-template-columns: 64px 220px 1fr;
+    gap: 10px;
+    align-items: baseline;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12.5px;
+  }
+  .endpoint:last-child { border-bottom: none; }
+  .method {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 5px;
+    text-align: center;
+  }
+  .get    { background: #dbeafe; color: #1d4ed8; }
+  .post   { background: #dcfce7; color: #15803d; }
+  .put    { background: #fef9c3; color: #a16207; }
+  .delete { background: #fee2e2; color: #b91c1c; }
+  .path   { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--text); }
+  .ep-desc { font-size: 12px; color: var(--muted); }
+
+  /* ── Q&A ── */
+  .qa { display: flex; flex-direction: column; gap: 0; }
+  .qa-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .qa-q {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px 18px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .qa-num {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .qa-q-text { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.45; }
+  .qa-a {
+    padding: 14px 18px 14px 54px;
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .qa-a code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    background: var(--accent-light);
+    color: var(--accent);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  .qa-a ul { padding-left: 18px; margin-top: 6px; }
+  .qa-a li { margin-bottom: 3px; }
+
+  /* ── Docker ── */
+  .docker-stage {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .docker-stage-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .docker-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .docker-stage-body { padding: 12px 16px; font-size: 12.5px; line-height: 1.6; }
+
+  /* ── Print ── */
+  @media print {
+    body { padding: 20px 30px; font-size: 12px; }
+    .cover { padding: 30px 0 30px; }
+    .cover h1 { font-size: 32px; }
+    .section { page-break-inside: avoid; }
+    .qa-item { page-break-inside: avoid; }
+    pre { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ COVER ══════════════════ -->
+<div class="cover">
+  <div class="cover-badge">Backend Deep-Dive</div>
+  <h1><span>Jobify</span> API</h1>
+  <p>IT job platform с матчингом навыков, Kanban-трекером заявок и фоновой агрегацией вакансий из Remotive</p>
+  <div class="cover-meta">
+    <span>⚙️ Go 1.23</span>
+    <span>🐘 PostgreSQL 16</span>
+    <span>⚡ Redis 7</span>
+    <span>🐳 Docker multi-stage</span>
+    <span>🔐 JWT RS256-like</span>
+  </div>
+</div>
+
+<!-- ══════════════════ 1. ЧТО ТАКОЕ ПРОЕКТ ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-num">1</span> Что такое Jobify</div>
+  <p>
+    Jobify — REST API бэкенд для IT job-платформы. Разработчик создаёт профиль со скиллами,
+    просматривает вакансии, получает <strong>match score</strong> (насколько его навыки совпадают с
+    требованиями), добавляет вакансии в Kanban-трекер (saved → applied → interview → offer → rejected)
+    и сохраняет их в шортлист. Администратор управляет вакансиями через CRUD.
+    Фоновый воркер каждые 6 часов тянет новые вакансии с <strong>Remotive API</strong> и дедублицирует их.
+  </p>
+
+  <div class="stack-grid" style="margin-top:16px">
+    <div class="stack-card">
+      <div class="stack-card-label">Язык / Runtime</div>
+      <div class="stack-card-value">Go 1.23</div>
+      <div class="stack-card-note">Стандартная библиотека + минимум зависимостей</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-card-label">HTTP Router</div>
+      <div class="stack-card-value">Chi v5</div>
+      <div class="stack-card-note">Совместим со стандартным net/http, middleware-цепочки</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-card-label">База данных</div>
+      <div class="stack-card-value">PostgreSQL 16 + pgx/v5</div>
+      <div class="stack-card-note">Пул соединений pgxpool, raw SQL без ORM</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-card-label">Кэш / Rate Limit</div>
+      <div class="stack-card-value">Redis 7 + go-redis/v9</div>
+      <div class="stack-card-note">Кэш вакансий + rate limiter + refresh-токены</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-card-label">Аутентификация</div>
+      <div class="stack-card-value">JWT (golang-jwt/v5)</div>
+      <div class="stack-card-note">Access token 72 ч, refresh token 7 дней в Redis</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-card-label">Хэширование паролей</div>
+      <div class="stack-card-value">bcrypt (golang.org/x/crypto)</div>
+      <div class="stack-card-note">Дефолтный cost, через pkg/hasher</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-card-label">ID сущностей</div>
+      <div class="stack-card-value">UUID v4 (google/uuid)</div>
+      <div class="stack-card-note">gen_random_uuid() в Postgres / uuid.New() в Go</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-card-label">Миграции</div>
+      <div class="stack-card-value">golang-migrate</div>
+      <div class="stack-card-note">*.up.sql / *.down.sql, версионные файлы</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-card-label">Логирование</div>
+      <div class="stack-card-value">log/slog (stdlib)</div>
+      <div class="stack-card-note">JSON-формат, без внешних либ</div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-card-label">Документация API</div>
+      <div class="stack-card-value">Swagger (swaggo)</div>
+      <div class="stack-card-note">Аннотации в хендлерах → /swagger/*</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ 2. АРХИТЕКТУРА И СЛОИ ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-num">2</span> Архитектура и слои</div>
+  <p>Проект построен на <strong>Clean Architecture</strong> с чёткими слоями и правилом: каждый слой знает только о нижнем.</p>
+
+  <div class="layers">
+    <div class="layer">
+      <div class="layer-name">cmd/api/main.go</div>
+      <div class="layer-desc">Точка входа. Инициализация конфига, подключение к БД и Redis, ручная DI (без wire/fx), запуск воркера, настройка HTTP-сервера, graceful shutdown через <code>signal.NotifyContext</code>.</div>
+    </div>
+    <div class="layer">
+      <div class="layer-name">internal/handler/</div>
+      <div class="layer-desc">HTTP-слой. Парсинг запроса, валидация, вызов сервиса, формирование ответа через <code>pkg/response</code>. <strong>Никакой бизнес-логики.</strong> Роутер — Chi v5. Порядок middleware: RequestID → Logger → CORS → BodyLimit → RateLimit → JWTAuth → RequireRole.</div>
+    </div>
+    <div class="layer">
+      <div class="layer-name">internal/service/</div>
+      <div class="layer-desc">Бизнес-логика. Принимает интерфейсы репозиториев — не конкретные типы. Рассчитывает match score, уведомляет о конфликтах, orchestrates вызовы нескольких репо. Чист от HTTP-контекста.</div>
+    </div>
+    <div class="layer">
+      <div class="layer-name">internal/repository/</div>
+      <div class="layer-desc">Интерфейсы в <code>interfaces.go</code>. Реализации в <code>postgres/</code> (pgx, raw SQL) и <code>redis/</code> (кэш, rate limit store, token store). Слой service зависит только от интерфейсов.</div>
+    </div>
+    <div class="layer">
+      <div class="layer-name">internal/domain/</div>
+      <div class="layer-desc">Модели (<code>User</code>, <code>Job</code>, <code>Application</code>, <code>DeveloperProfile</code>, <code>SavedJob</code>) и доменные ошибки (<code>ErrNotFound</code>, <code>ErrConflict</code>, <code>ErrUnauthorized</code>, <code>ErrForbidden</code>). <strong>Дно — ни от чего из internal не зависит.</strong></div>
+    </div>
+    <div class="layer">
+      <div class="layer-name">internal/middleware/</div>
+      <div class="layer-desc">Каждый middleware в отдельном файле: <code>auth.go</code>, <code>logger.go</code>, <code>rate_limit.go</code>, <code>body_limit.go</code>. Навешиваются в <code>router.go</code>.</div>
+    </div>
+    <div class="layer">
+      <div class="layer-name">internal/worker/</div>
+      <div class="layer-desc">Background goroutine — <code>JobAggregator</code>. Тикер каждые 6 часов, дедупликация по <code>source_id</code>, graceful stop через context.</div>
+    </div>
+    <div class="layer">
+      <div class="layer-name">pkg/</div>
+      <div class="layer-desc">Переиспользуемые утилиты без привязки к домену: <code>jwt</code>, <code>hasher</code>, <code>response</code>, <code>validator</code>. Могут импортироваться из любого слоя.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ 3. БАЗА ДАННЫХ ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-num">3</span> База данных — схема и индексы</div>
+
+  <table>
+    <thead>
+      <tr><th>Таблица</th><th>Ключевые поля</th><th>Примечание</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>users</code></td>
+        <td><code>id UUID PK</code>, email UNIQUE, password, role, created_at, updated_at</td>
+        <td>role: <code>developer</code> | <code>admin</code></td>
+      </tr>
+      <tr>
+        <td><code>developer_profiles</code></td>
+        <td><code>user_id UUID UNIQUE FK</code>, name, bio, skills TEXT[], experience_years, salary_min, salary_max, remote_only, github_url</td>
+        <td>1:1 с users, CASCADE DELETE. skills — массив TEXT</td>
+      </tr>
+      <tr>
+        <td><code>jobs</code></td>
+        <td><code>id UUID PK</code>, title, company, description, skills TEXT[], salary_min, salary_max, is_remote, source, source_id, is_active, views_count BIGINT, created_at</td>
+        <td>source: <code>manual</code> | <code>remotive</code>. source_id для дедупликации</td>
+      </tr>
+      <tr>
+        <td><code>applications</code></td>
+        <td><code>id UUID PK</code>, user_id FK, job_id FK, status, note, applied_at, updated_at</td>
+        <td>UNIQUE(user_id, job_id). status: saved/applied/interview/offer/rejected</td>
+      </tr>
+      <tr>
+        <td><code>saved_jobs</code></td>
+        <td><code>id UUID PK</code>, user_id FK, job_id FK, created_at</td>
+        <td>UNIQUE(user_id, job_id). CASCADE DELETE</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Индексы</h3>
+  <table>
+    <thead><tr><th>Индекс</th><th>Тип</th><th>Зачем</th></tr></thead>
+    <tbody>
+      <tr><td><code>idx_jobs_skills</code></td><td>GIN</td><td>Фильтр вакансий по массиву скиллов (<code>skills @> '{go}'</code>)</td></tr>
+      <tr><td><code>idx_developer_skills</code></td><td>GIN</td><td>Потенциальный поиск разработчиков по навыкам</td></tr>
+      <tr><td><code>idx_jobs_is_remote</code></td><td>B-tree</td><td>Фильтр remote=true</td></tr>
+      <tr><td><code>idx_jobs_is_active</code></td><td>B-tree</td><td>Список только активных вакансий</td></tr>
+      <tr><td><code>idx_jobs_salary</code></td><td>B-tree (compound)</td><td>Фильтр по зарплатному диапазону</td></tr>
+      <tr><td><code>idx_jobs_views_count</code></td><td>B-tree DESC</td><td>Сортировка «по популярности»</td></tr>
+      <tr><td><code>idx_applications_user</code></td><td>B-tree</td><td>Быстрый список заявок пользователя</td></tr>
+      <tr><td><code>idx_saved_jobs_user_id</code></td><td>B-tree</td><td>Шортлист пользователя</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════ 4. MIDDLEWARE ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-num">4</span> Middleware</div>
+  <p>Порядок применения в <code>router.go</code>: <strong>Recoverer → RequestID → BodyLimit → CORS → RateLimit</strong> (глобально), затем <strong>JWTAuth → RequireRole</strong> для защищённых групп.</p>
+
+  <div class="mw-grid">
+    <div class="mw-card">
+      <div class="mw-card-title">Recoverer (chi)</div>
+      <div class="mw-card-body">Перехватывает panic, возвращает 500. Встроенный в Chi — идёт первым, защищает весь стек.</div>
+    </div>
+    <div class="mw-card">
+      <div class="mw-card-title">RequestID (chi)</div>
+      <div class="mw-card-body">Генерирует уникальный X-Request-Id для каждого запроса. Встроенный в Chi.</div>
+    </div>
+    <div class="mw-card">
+      <div class="mw-card-title">BodyLimit</div>
+      <div class="mw-card-body">Ограничивает тело запроса до <strong>1 МБ</strong> через <code>http.MaxBytesReader</code>. Защита от payload flood.</div>
+    </div>
+    <div class="mw-card">
+      <div class="mw-card-title">CORS (go-chi/cors)</div>
+      <div class="mw-card-body">AllowedOrigins: <code>*</code>. Методы: GET, POST, PUT, DELETE, OPTIONS. Хедеры: Accept, Authorization, Content-Type.</div>
+    </div>
+    <div class="mw-card">
+      <div class="mw-card-title">RateLimit</div>
+      <div class="mw-card-body">
+        Redis INCR + EXPIRE по ключу <code>rl:&lt;ip&gt;:&lt;minute&gt;</code>. Лимит задаётся через <code>RATE_LIMIT_PER_MIN</code> (по умолчанию 60). При ошибке Redis — <strong>fail open</strong> (не блокирует). 429 + Retry-After: 60. Поддерживает X-Forwarded-For.
+      </div>
+    </div>
+    <div class="mw-card">
+      <div class="mw-card-title">Logger</div>
+      <div class="mw-card-body">
+        Кастомный. Оборачивает ResponseWriter, перехватывает статус-код. Логирует method, path, status, duration, remote через <code>slog</code> в JSON.
+      </div>
+    </div>
+    <div class="mw-card">
+      <div class="mw-card-title">JWTAuth</div>
+      <div class="mw-card-body">
+        Парсит <code>Authorization: Bearer &lt;token&gt;</code>. Валидирует JWT через <code>pkg/jwt.Manager</code>. Кладёт <code>user_id</code> и <code>role</code> в context. 401 при невалидном токене.
+      </div>
+    </div>
+    <div class="mw-card">
+      <div class="mw-card-title">RequireRole</div>
+      <div class="mw-card-body">
+        Проверяет <code>role</code> из context. Сейчас используется для группы <code>admin</code>. 403 Forbidden при несоответствии. Применяется после JWTAuth.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ 5. API ENDPOINTS ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-num">5</span> API Endpoints — <code>BASE: /api/v1</code></div>
+
+  <div class="endpoint-group">
+    <div class="endpoint-group-title">Auth (без токена)</div>
+    <div class="endpoint"><span class="method post">POST</span><span class="path">/auth/register</span><span class="ep-desc">Регистрация. Возвращает User. 409 если email занят</span></div>
+    <div class="endpoint"><span class="method post">POST</span><span class="path">/auth/login</span><span class="ep-desc">Логин. Возвращает access_token + refresh_token</span></div>
+    <div class="endpoint"><span class="method post">POST</span><span class="path">/auth/refresh</span><span class="ep-desc">Обмен refresh_token на новую пару токенов</span></div>
+    <div class="endpoint"><span class="method post">POST</span><span class="path">/auth/logout</span><span class="ep-desc">Инвалидация refresh_token в Redis. 204 No Content</span></div>
+  </div>
+
+  <div class="endpoint-group">
+    <div class="endpoint-group-title">Profile (Bearer token)</div>
+    <div class="endpoint"><span class="method get">GET</span><span class="path">/me</span><span class="ep-desc">Текущий пользователь + профиль</span></div>
+    <div class="endpoint"><span class="method put">PUT</span><span class="path">/me</span><span class="ep-desc">Upsert профиля. Создаёт если нет, обновляет если есть</span></div>
+  </div>
+
+  <div class="endpoint-group">
+    <div class="endpoint-group-title">Jobs (Bearer token)</div>
+    <div class="endpoint"><span class="method get">GET</span><span class="path">/jobs</span><span class="ep-desc">Список с фильтрами: page, limit, skills, remote, salary_min, salary_max</span></div>
+    <div class="endpoint"><span class="method get">GET</span><span class="path">/jobs/{id}</span><span class="ep-desc">Детали + match score для текущего юзера. Инкремент views_count</span></div>
+    <div class="endpoint"><span class="method post">POST</span><span class="path">/jobs</span><span class="ep-desc"><span class="mw-badge badge-admin">admin</span> Создать вакансию</span></div>
+    <div class="endpoint"><span class="method put">PUT</span><span class="path">/jobs/{id}</span><span class="ep-desc"><span class="mw-badge badge-admin">admin</span> Обновить вакансию</span></div>
+    <div class="endpoint"><span class="method delete">DELETE</span><span class="path">/jobs/{id}</span><span class="ep-desc"><span class="mw-badge badge-admin">admin</span> Удалить вакансию</span></div>
+  </div>
+
+  <div class="endpoint-group">
+    <div class="endpoint-group-title">Applications (Bearer token)</div>
+    <div class="endpoint"><span class="method get">GET</span><span class="path">/applications</span><span class="ep-desc">Все заявки текущего юзера</span></div>
+    <div class="endpoint"><span class="method post">POST</span><span class="path">/applications</span><span class="ep-desc">Добавить заявку (job_id + optional note)</span></div>
+    <div class="endpoint"><span class="method put">PUT</span><span class="path">/applications/{id}</span><span class="ep-desc">Сменить статус. 403 если чужая заявка</span></div>
+    <div class="endpoint"><span class="method delete">DELETE</span><span class="path">/applications/{id}</span><span class="ep-desc">Удалить заявку. 403 если чужая</span></div>
+  </div>
+
+  <div class="endpoint-group">
+    <div class="endpoint-group-title">Saved Jobs (Bearer token)</div>
+    <div class="endpoint"><span class="method get">GET</span><span class="path">/saved-jobs</span><span class="ep-desc">Шортлист юзера с пагинацией</span></div>
+    <div class="endpoint"><span class="method post">POST</span><span class="path">/saved-jobs</span><span class="ep-desc">Добавить в шортлист. 409 если уже сохранено</span></div>
+    <div class="endpoint"><span class="method delete">DELETE</span><span class="path">/saved-jobs/{job_id}</span><span class="ep-desc">Убрать из шортлиста. 204 No Content</span></div>
+  </div>
+
+  <div class="endpoint-group">
+    <div class="endpoint-group-title">Misc (без токена)</div>
+    <div class="endpoint"><span class="method get">GET</span><span class="path">/health</span><span class="ep-desc">Liveness probe. {status: ok}</span></div>
+    <div class="endpoint"><span class="method get">GET</span><span class="path">/swagger/*</span><span class="ep-desc">Swagger UI (swaggo/http-swagger)</span></div>
+  </div>
+</div>
+
+<!-- ══════════════════ 6. DOCKER ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-num">6</span> Docker — образы и конфигурация</div>
+
+  <h3>Multi-stage Dockerfile</h3>
+  <div class="docker-stage">
+    <div class="docker-stage-header">
+      <div class="docker-dot" style="background:#f59e0b"></div>
+      Stage 1: builder — golang:1.22-alpine
+    </div>
+    <div class="docker-stage-body">
+      Скачивает зависимости (<code>go mod download</code>), компилирует бинарник с флагами
+      <code>CGO_ENABLED=0 GOOS=linux GOARCH=amd64 -ldflags="-s -w"</code>.
+      Результат: <code>/bin/api</code> (~12 MB stripped).
+    </div>
+  </div>
+  <div class="docker-stage">
+    <div class="docker-stage-header">
+      <div class="docker-dot" style="background:#22c55e"></div>
+      Stage 2: runtime — alpine:3.20
+    </div>
+    <div class="docker-stage-body">
+      Только <code>ca-certificates</code> + <code>tzdata</code>. Создаётся непривилегированный пользователь <code>appuser</code>.
+      Копируется только бинарник. <strong>Нет исходников, нет компилятора, нет shell-утилит.</strong>
+      Образ ~15 MB.
+    </div>
+  </div>
+
+  <h3>docker-compose.yml — три сервиса</h3>
+  <table>
+    <thead><tr><th>Сервис</th><th>Образ</th><th>Порт хоста→контейнера</th><th>Примечание</th></tr></thead>
+    <tbody>
+      <tr><td><code>postgres</code></td><td>postgres:16-alpine</td><td>5433→5432</td><td>Volume postgres_data, healthcheck pg_isready</td></tr>
+      <tr><td><code>redis</code></td><td>redis:7-alpine</td><td>6380→6379</td><td>Healthcheck redis-cli ping</td></tr>
+      <tr><td><code>api</code></td><td>build: ./docker/Dockerfile</td><td>8080→8080</td><td>depends_on (healthy), restart: unless-stopped</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:var(--muted)">
+    Нестандартные порты хоста (5433, 6380) избегают конфликтов с локально установленными Postgres/Redis.
+    JWT_SECRET передаётся через переменную окружения и обязателен (иначе сервис не стартует).
+  </p>
+</div>
+
+<!-- ══════════════════ 7. AUTH FLOW ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-num">7</span> Аутентификация — как работает</div>
+  <pre>
+1. POST /auth/login → сервис проверяет bcrypt(password, hash)
+2. Генерируется access_token (JWT, 72 ч) + refresh_token (UUID, 7 дней)
+3. refresh_token сохраняется в Redis: key=token, value=user_id, TTL=7d
+4. Клиент хранит оба токена (localStorage в браузере)
+
+При запросе к защищённому endpoint:
+   JWTAuth middleware → парсит Bearer <access_token>
+   → извлекает user_id + role → кладёт в context
+
+Когда access_token истёк (401):
+   Axios interceptor → POST /auth/refresh { refresh_token }
+   → Redis lookup → новая пара токенов → повтор запроса
+   Если refresh тоже истёк → 401 → AUTH_EXPIRED_EVENT → logout
+
+POST /auth/logout:
+   Redis DEL(refresh_token) → token инвалидирован
+  </pre>
+</div>
+
+<!-- ══════════════════ 8. КЭШИРОВАНИЕ ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-num">8</span> Кэширование вакансий в Redis</div>
+  <p>
+    Список вакансий (<code>GET /jobs</code>) кэшируется в Redis.
+    Ключ строится из параметров фильтра: <code>jobs:page=1:limit=20:skills=[go]:remote=true</code>.
+    В кэше хранится JSON-структура <code>{jobs: [...], total: N}</code> — оба поля вместе,
+    чтобы пагинация возвращала правильный <code>total</code>.
+    TTL — 30 секунд по умолчанию.
+  </p>
+  <p>
+    При создании, обновлении или удалении вакансии (admin) вызывается <code>cache.Invalidate(ctx)</code> —
+    Redis SCAN по паттерну <code>jobs:*</code> с пакетным DEL. Ошибка инвалидации логируется, но
+    <strong>не прерывает операцию записи</strong> (fail soft).
+  </p>
+</div>
+
+<!-- ══════════════════ 9. ВОРКЕР ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-num">9</span> Background Worker — Job Aggregator</div>
+  <p>
+    <code>worker.JobAggregator</code> запускается в отдельной goroutine в <code>main.go</code>.
+    Использует <code>time.Ticker</code> на 6 часов. При старте сразу делает первый прогон.
+    Fetches вакансии из <strong>Remotive API</strong> (IT remote jobs), маппит в domain.Job,
+    проверяет дубликаты по <code>source_id</code> (<code>ExistsBySourceID</code>),
+    сохраняет только новые. Остановка через <code>ctx.Done()</code> — корректный graceful shutdown.
+  </p>
+</div>
+
+<!-- ══════════════════ 10. MATCH SCORE ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-num">10</span> Match Score — алгоритм</div>
+  <p>
+    Функция <code>CalculateMatch(userSkills, jobSkills []string)</code> в <code>service/job_service.go</code>
+    возвращает три значения:
+  </p>
+  <pre>
+percent  = len(matched) / len(jobSkills) * 100
+matched  = навыки, которые есть у юзера И требует вакансия
+missing  = навыки вакансии, которых нет у юзера
+
+Сравнение case-insensitive (strings.EqualFold).
+Если jobSkills пуст — percent = 0.
+  </pre>
+  <p>
+    Результат возвращается в <code>GET /jobs/{id}</code> как поля <code>match_percent</code>,
+    <code>matched_skills</code>, <code>missing_skills</code>.
+  </p>
+</div>
+
+<!-- ══════════════════ Q&A ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-num">11</span> 20 вопросов на интервью</div>
+  <div class="qa">
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">1</span><span class="qa-q-text">Какую архитектуру использует проект и почему?</span></div>
+      <div class="qa-a">Clean Architecture с слоями handler → service → repository → domain. Каждый слой знает только о нижнем, зависимости инвертированы через интерфейсы в <code>repository/interfaces.go</code>. Это позволяет тестировать сервисный слой с мок-репозиториями без поднятия БД, менять реализацию (например, заменить pgx на что-то другое) без изменения бизнес-логики.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">2</span><span class="qa-q-text">Как устроен JWT в проекте? Почему два токена?</span></div>
+      <div class="qa-a">
+        <code>access_token</code> (JWT, 72 ч) — используется в каждом запросе, хранится только у клиента. Короткий TTL снижает риск при компрометации.
+        <code>refresh_token</code> (случайный UUID, 7 дней) — хранится в Redis (key=token, value=user_id). Позволяет получить новый access_token без повторного логина. При logout Redis DELETE инвалидирует его немедленно, в отличие от JWT который нельзя отозвать.
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">3</span><span class="qa-q-text">Почему GIN-индекс для массива skills, а не обычный?</span></div>
+      <div class="qa-a">B-tree индекс не умеет индексировать содержимое массивов. GIN (Generalized Inverted Index) создаёт отдельные записи для каждого элемента массива и поддерживает операторы <code>@&gt;</code> (contains), <code>&amp;&amp;</code> (overlap). Запрос <code>skills @&gt; '{go,redis}'</code> использует GIN эффективно — без него был бы seq scan по всей таблице jobs.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">4</span><span class="qa-q-text">Что такое rate limiter и как он реализован?</span></div>
+      <div class="qa-a">
+        Middleware в <code>internal/middleware/rate_limit.go</code>. Алгоритм — <strong>fixed window</strong>:
+        ключ Redis = <code>rl:&lt;ip&gt;:&lt;minute&gt;</code> (минута из Unix timestamp / 60).
+        INCR атомарно увеличивает счётчик, EXPIRE ставится только при count==1 (один вызов на окно).
+        При превышении лимита — 429 + <code>Retry-After: 60</code>.
+        Если Redis недоступен — fail open (не блокирует запросы), потому что недоступность кэша не должна ронять API.
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">5</span><span class="qa-q-text">Как работает кэширование вакансий? Как инвалидация?</span></div>
+      <div class="qa-a">
+        <code>GET /jobs</code> строит ключ из всех параметров фильтра и ищет в Redis. При cache miss — запрос к Postgres, результат кладётся в Redis как <code>{jobs, total}</code> (чтобы пагинация знала реальный total, не только размер текущей страницы). TTL — 30 секунд.
+        При создании/обновлении/удалении вакансии (admin) — <code>Invalidate()</code> делает Redis SCAN <code>jobs:*</code> и пакетный DEL. Ошибка инвалидации логируется и игнорируется — write-операция не должна фейлиться из-за кэша.
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">6</span><span class="qa-q-text">Как реализован graceful shutdown?</span></div>
+      <div class="qa-a">
+        В <code>main.go</code>: <code>signal.NotifyContext</code> ловит SIGINT/SIGTERM. По сигналу вызывается <code>cancel()</code> — отменяется корневой контекст, воркер получает <code>ctx.Done()</code> и останавливает тикер. Параллельно <code>srv.Shutdown(shutdownCtx)</code> ждёт завершения активных соединений (до 10 секунд). Только после этого процесс завершается.
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">7</span><span class="qa-q-text">Почему pgx/v5 без ORM?</span></div>
+      <div class="qa-a">
+        pgx — нативный PostgreSQL драйвер для Go, в разы быстрее <code>database/sql</code> (бинарный протокол, pipelining). Raw SQL даёт полный контроль над запросами, нет N+1 проблем, нет "магии" ORM которая генерирует неоптимальные JOIN-ы. Для небольшой команды SQL читается явно — понятно что именно идёт в БД. pgxpool — встроенный connection pool с health checks.
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">8</span><span class="qa-q-text">Как устроен Docker — что такое multi-stage build и зачем?</span></div>
+      <div class="qa-a">
+        Stage 1 (builder, golang:1.22-alpine): компилирует Go-бинарник. Stage 2 (runtime, alpine:3.20): копирует только готовый бинарник. Итоговый образ ~15 MB вместо ~300+ MB если бы был один stage с Go SDK. В образе нет компилятора, нет исходников, нет лишних утилит — меньше attack surface. Пользователь <code>appuser</code> непривилегированный (не root).
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">9</span><span class="qa-q-text">Как DI (Dependency Injection) организована в проекте?</span></div>
+      <div class="qa-a">
+        Ручная DI в <code>cmd/api/main.go</code> без wire/fx. Сначала инициализируются инфраструктурные зависимости (db, redis), затем репозитории, потом сервисы (принимают интерфейсы репозиториев), затем хендлеры (принимают сервисы), затем роутер. Всё явно — нет рефлексии, нет магии, легко читается и дебажится.
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">10</span><span class="qa-q-text">Как защищены admin-только маршруты?</span></div>
+      <div class="qa-a">
+        В <code>router.go</code> admin-эндпоинты (POST/PUT/DELETE /jobs) обёрнуты в дополнительную группу Chi с middleware <code>RequireRole("admin")</code>. Этот middleware читает <code>role</code> из контекста (поставленного <code>JWTAuth</code>) и возвращает 403 если роль не совпадает. Порядок: JWTAuth (проверяет токен) → RequireRole (проверяет роль).
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">11</span><span class="qa-q-text">Что такое domain errors и зачем они нужны?</span></div>
+      <div class="qa-a">
+        В <code>internal/domain/errors.go</code> объявлены сентинел-ошибки: <code>ErrNotFound</code>, <code>ErrConflict</code>, <code>ErrUnauthorized</code>, <code>ErrForbidden</code>, <code>ErrInvalidInput</code>. Репозитории оборачивают pgx-ошибки в эти доменные, сервисы пробрасывают их вверх, хендлеры маппят на HTTP-коды через <code>errors.Is</code>. Это развязывает HTTP-слой от деталей БД.
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">12</span><span class="qa-q-text">Как реализована пагинация в /jobs?</span></div>
+      <div class="qa-a">
+        Query-параметры <code>page</code> и <code>limit</code> передаются в <code>repository.JobFilter</code>. В SQL: <code>LIMIT $n OFFSET $m</code> где offset = (page-1)*limit. Параллельно в том же запросе или отдельным COUNT(*) считается total. Ответ обёрнут в <code>response.WithMeta</code> — добавляет поля <code>total</code>, <code>page</code>, <code>limit</code>, <code>pages</code>.
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">13</span><span class="qa-q-text">Как работает Job Aggregator? Как избегаются дубликаты?</span></div>
+      <div class="qa-a">
+        Background goroutine с <code>time.Ticker</code> на 6 часов. При каждом тике: запрос к Remotive API, маппинг ответа в domain.Job (source="remotive", source_id=строка из Remotive). Перед вставкой — <code>ExistsBySourceID(ctx, sourceID)</code>: SELECT COUNT WHERE source_id=$1. Если существует — пропуск. Новые вакансии вставляются по одному. Ошибки логируются, но не останавливают воркер.
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">14</span><span class="qa-q-text">Как происходит upsert профиля?</span></div>
+      <div class="qa-a">
+        <code>PUT /me</code> всегда вызывает <code>profileRepo.Update()</code>. Update делает SQL UPDATE WHERE user_id=$n. Если затронуто 0 строк — pgx возвращает <code>ErrNoRows</code>, репо конвертирует его в <code>domain.ErrNotFound</code>. Сервис ловит ErrNotFound через <code>errors.Is</code> и вызывает <code>profileRepo.Create()</code> с новым <code>uuid.New()</code>. Это решает проблему admin-пользователей у которых нет записи в developer_profiles.
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">15</span><span class="qa-q-text">Как тестируется проект?</span></div>
+      <div class="qa-a">
+        <ul>
+          <li>Сервисный слой — unit-тесты с ручными мок-репозиториями (структуры реализующие интерфейс)</li>
+          <li>Middleware — unit-тесты через <code>httptest.NewRecorder</code> + <code>httptest.NewRequest</code></li>
+          <li>pkg/jwt, pkg/hasher, pkg/validator — unit-тесты на утилиты</li>
+          <li>Все тесты table-driven: <code>tests := []struct{name; ...}{}</code> + <code>t.Run(tt.name, ...)</code></li>
+          <li>Нет интеграционных тестов с реальной БД (пока)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">16</span><span class="qa-q-text">Какой формат HTTP-ответов?</span></div>
+      <div class="qa-a">
+        Все ответы через <code>pkg/response</code>. Конверт: <code>{"success": true/false, "data": ..., "error": "...", "meta": {...}}</code>. <code>response.JSON</code> — успех с data. <code>response.Error</code> — ошибка с error-строкой. <code>response.WithMeta</code> — список с пагинационным meta. Content-Type всегда <code>application/json</code>.
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">17</span><span class="qa-q-text">Что такое views_count и как он обновляется?</span></div>
+      <div class="qa-a">
+        Поле <code>views_count BIGINT</code> в таблице jobs. При каждом <code>GET /jobs/{id}</code> вызывается <code>jobRepo.IncrementViews(ctx, jobID)</code> — атомарный <code>UPDATE jobs SET views_count = views_count + 1 WHERE id=$1</code>. Индекс <code>idx_jobs_views_count DESC</code> поддерживает сортировку по популярности. Инкремент происходит независимо от авторизации (но endpoint защищён JWT).
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">18</span><span class="qa-q-text">Почему порты в docker-compose нестандартные (5433, 6380)?</span></div>
+      <div class="qa-a">
+        Если на хост-машине уже запущен локальный Postgres на 5432 или Redis на 6379, docker-compose не запустится из-за конфликта портов. Нестандартные порты хоста (5433→5432, 6380→6379) позволяют запускать оба окружения одновременно. Внутри Docker-сети контейнеры общаются по стандартным портам (api подключается к postgres:5432 и redis:6379).
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">19</span><span class="qa-q-text">Как настраивается приложение? Какие env-переменные обязательны?</span></div>
+      <div class="qa-a">
+        Конфиг читается один раз в <code>main.go</code> через <code>config.Load()</code> (<code>internal/config/config.go</code>). Поддерживается <code>.env</code> через godotenv.
+        <ul>
+          <li><code>DATABASE_URL</code> — обязателен. Postgres DSN</li>
+          <li><code>JWT_SECRET</code> — обязателен. Секрет для подписи JWT</li>
+          <li><code>HTTP_PORT</code> — дефолт 8080</li>
+          <li><code>REDIS_ADDR</code> — дефолт localhost:6379</li>
+          <li><code>REMOTIVE_API_URL</code> — дефолт remotive.com/api/remote-jobs</li>
+          <li><code>RATE_LIMIT_PER_MIN</code> — дефолт 60</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-num">20</span><span class="qa-q-text">Как Kanban-трекер заявок работает на уровне БД?</span></div>
+      <div class="qa-a">
+        Таблица <code>applications</code> с полем <code>status VARCHAR(50)</code>. Значения: <code>saved</code>, <code>applied</code>, <code>interview</code>, <code>offer</code>, <code>rejected</code>. Constraint UNIQUE(user_id, job_id) — пользователь не может дважды откликнуться на одну вакансию. Смена статуса — <code>PUT /applications/{id}</code> с body <code>{"status": "interview"}</code>. Авторизация: сервис проверяет что application.user_id == ctx_user_id (иначе 403). <code>applied_at</code> заполняется при переходе в статус "applied".
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div style="text-align:center;padding:32px 0 16px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:32px">
+  Jobify API — Project Documentation &nbsp;·&nbsp; github.com/XXX1694/jobify &nbsp;·&nbsp; Go 1.23 + PostgreSQL 16 + Redis 7
+</div>
+
+</body>
+</html>
